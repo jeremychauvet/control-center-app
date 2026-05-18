@@ -16,45 +16,58 @@ enum ScreenRegion {
 enum ScreenLayout {
 
     /// Compute the target frame (AX coordinates) for the given region on `screen`.
-    /// `currentAXFrame` is used by `.center` to preserve the window's current size.
+    ///
+    /// - Parameter margin: Inset applied to every edge of the region's footprint.
+    ///   Two adjacent regions (e.g. left + right half) end up separated by `2 * margin`,
+    ///   matching macOS native tiling appearance when "Tiled windows have margins"
+    ///   is enabled in System Settings.
+    /// - Parameter currentAXFrame: Used by `.center` to preserve the window's size.
     static func targetFrame(
         for region: ScreenRegion,
         on screen: NSScreen,
+        margin: CGFloat = 0,
         currentAXFrame: CGRect? = nil
     ) -> CGRect {
         // visibleFrame excludes the menu bar and Dock — exactly what we want.
         let axVisible = convertToAX(screen.visibleFrame)
 
+        func inset(_ rect: CGRect) -> CGRect {
+            guard margin > 0 else { return rect }
+            return rect.insetBy(dx: margin, dy: margin)
+        }
+
         switch region {
         case .leftHalf:
-            return CGRect(
+            return inset(CGRect(
                 x: axVisible.minX, y: axVisible.minY,
                 width: axVisible.width / 2, height: axVisible.height
-            )
+            ))
         case .rightHalf:
-            return CGRect(
+            return inset(CGRect(
                 x: axVisible.minX + axVisible.width / 2, y: axVisible.minY,
                 width: axVisible.width / 2, height: axVisible.height
-            )
+            ))
         case .topHalf:
-            return CGRect(
+            return inset(CGRect(
                 x: axVisible.minX, y: axVisible.minY,
                 width: axVisible.width, height: axVisible.height / 2
-            )
+            ))
         case .bottomHalf:
-            return CGRect(
+            return inset(CGRect(
                 x: axVisible.minX, y: axVisible.minY + axVisible.height / 2,
                 width: axVisible.width, height: axVisible.height / 2
-            )
+            ))
         case .maximize:
-            return axVisible
+            return inset(axVisible)
         case .center:
             let size = currentAXFrame?.size
                 ?? CGSize(width: axVisible.width / 2, height: axVisible.height / 2)
-            let w = min(size.width, axVisible.width)
-            let h = min(size.height, axVisible.height)
+            let maxW = max(0, axVisible.width  - 2 * margin)
+            let maxH = max(0, axVisible.height - 2 * margin)
+            let w = min(size.width,  maxW)
+            let h = min(size.height, maxH)
             return CGRect(
-                x: axVisible.minX + (axVisible.width - w) / 2,
+                x: axVisible.minX + (axVisible.width  - w) / 2,
                 y: axVisible.minY + (axVisible.height - h) / 2,
                 width: w, height: h
             )

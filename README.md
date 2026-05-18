@@ -35,9 +35,9 @@ are remappable from the popover.
 |---|---|
 | Left half | `⌘←` |
 | Right half | `⌘→` |
-| Top half | `⌘↑` |
+| Maximize | `⌘↑` |
 | Bottom half | `⌘↓` |
-| Maximize | `⌃⌥↩` |
+| Top half | `⌃⌥↑` |
 | Center | `⌃⌥C` |
 
 ## Accessibility permission

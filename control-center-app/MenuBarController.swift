@@ -22,7 +22,7 @@ final class MenuBarController: NSObject {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
             button.image = NSImage(
-                systemSymbolName: "rectangle.split.2x2",
+                systemSymbolName: "rectangle.badge.sparkles",
                 accessibilityDescription: "Control Center"
             )
             button.action = #selector(togglePopover(_:))

@@ -27,7 +27,7 @@ final class KeybindingStore {
 
     private enum Keys {
         // Bump on default-binding changes so existing prefs don't shadow new defaults.
-        static let bindings = "bindings.v2"
+        static let bindings = "bindings.v3"
         static let animationEnabled = "animationEnabled"
         static let animationDuration = "animationDuration"
     }
@@ -62,9 +62,9 @@ final class KeybindingStore {
         return [
             .leftHalf:   KeyCombo(keyCode: UInt32(kVK_LeftArrow),  modifiers: cmd),
             .rightHalf:  KeyCombo(keyCode: UInt32(kVK_RightArrow), modifiers: cmd),
-            .topHalf:    KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: cmd),
+            .maximize:   KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: cmd),
             .bottomHalf: KeyCombo(keyCode: UInt32(kVK_DownArrow),  modifiers: cmd),
-            .maximize:   KeyCombo(keyCode: UInt32(kVK_Return),     modifiers: ctrlOpt),
+            .topHalf:    KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: ctrlOpt),
             .center:     KeyCombo(keyCode: UInt32(kVK_ANSI_C),     modifiers: ctrlOpt),
         ]
     }()

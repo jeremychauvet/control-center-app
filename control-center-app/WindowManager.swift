@@ -1,5 +1,6 @@
 import AppKit
 import ApplicationServices
+import CoreFoundation
 import Foundation
 
 /// Ties the layers together: subscribes to keybinding changes, registers Carbon
@@ -43,6 +44,19 @@ final class WindowManager {
         }
     }
 
+    /// Inset applied to tiled windows when the macOS "Tiled windows have margins"
+    /// setting (com.apple.WindowManager / EnableTiledWindowMargins) is enabled.
+    /// Matches the appearance of macOS's own tiling.
+    private static let tileMarginPoints: CGFloat = 8
+
+    private static var systemTileMargin: CGFloat {
+        let enabled = CFPreferencesCopyAppValue(
+            "EnableTiledWindowMargins" as CFString,
+            "com.apple.WindowManager" as CFString
+        ) as? Bool ?? false
+        return enabled ? tileMarginPoints : 0
+    }
+
     func perform(action: WindowAction) {
         // Gracefully degrade if permission was revoked while running.
         guard accessibility.isTrusted else {
@@ -55,7 +69,12 @@ final class WindowManager {
             return
         }
         let region = ScreenLayout.region(for: action)
-        let target = ScreenLayout.targetFrame(for: region, on: screen, currentAXFrame: current)
+        let target = ScreenLayout.targetFrame(
+            for: region,
+            on: screen,
+            margin: Self.systemTileMargin,
+            currentAXFrame: current
+        )
         if store.animationEnabled {
             animator.animate(window, to: target, duration: store.animationDuration)
         } else {
