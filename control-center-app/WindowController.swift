@@ -15,13 +15,30 @@ protocol WindowControlling: AnyObject {
 
 @MainActor
 final class WindowController: WindowControlling {
-    private let systemWide: AXUIElement = AXUIElementCreateSystemWide()
-
     func focusedWindow() -> AXUIElement? {
-        guard let app = copyAttribute(systemWide, kAXFocusedApplicationAttribute) else { return nil }
-        let appElement = app as! AXUIElement
-        guard let win = copyAttribute(appElement, kAXFocusedWindowAttribute) else { return nil }
-        return (win as! AXUIElement)
+        // The system-wide AX element's kAXFocusedApplicationAttribute is unreliable
+        // for Electron/Chromium apps (VS Code, Chrome) — it returns nil even when
+        // the app is clearly frontmost. NSWorkspace reads from a separate, reliable
+        // source, so we resolve the app via PID and build the AX element ourselves.
+        guard let app = NSWorkspace.shared.frontmostApplication else {
+            NSLog("WindowController: no frontmost application")
+            return nil
+        }
+        let appElement = AXUIElementCreateApplication(app.processIdentifier)
+        if let win = copyAttribute(appElement, kAXFocusedWindowAttribute) {
+            return (win as! AXUIElement)
+        }
+        if let win = copyAttribute(appElement, kAXMainWindowAttribute) {
+            NSLog("WindowController: focused window missing, using main window")
+            return (win as! AXUIElement)
+        }
+        if let windows = copyAttribute(appElement, kAXWindowsAttribute) as? [AXUIElement],
+           let first = windows.first {
+            NSLog("WindowController: focused/main window missing, using first window")
+            return first
+        }
+        NSLog("WindowController: frontmost app \(app.localizedName ?? "?") exposes no usable window")
+        return nil
     }
 
     func frame(of window: AXUIElement) -> CGRect? {
