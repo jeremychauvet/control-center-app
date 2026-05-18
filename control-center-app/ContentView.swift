@@ -1,59 +1,135 @@
-//
-//  ContentView.swift
-//  control-center-app
-//
-//  Created by Captaincy on 18/05/2026.
-//
-
+import AppKit
 import SwiftUI
-import SwiftData
 
-struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+/// The popover UI for the menu bar item.
+struct SettingsView: View {
+    @Environment(KeybindingStore.self) private var store
+    @Environment(AccessibilityService.self) private var accessibility
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        @Bindable var store = store
+
+        VStack(alignment: .leading, spacing: 0) {
+            header
+            Divider()
+            if !accessibility.isTrusted {
+                permissionBanner
+                Divider()
             }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+            bindingsList
+            Divider()
+            VStack(alignment: .leading, spacing: 10) {
+                Toggle("Animate window snapping", isOn: $store.animationEnabled)
+                    .toggleStyle(.switch)
+                HStack {
+                    Text("Duration")
+                        .frame(width: 70, alignment: .leading)
+                        .foregroundStyle(store.animationEnabled ? .primary : .secondary)
+                    Slider(value: $store.animationDuration, in: 0.05...0.5)
+                        .disabled(!store.animationEnabled)
+                    Text("\(Int(store.animationDuration * 1000))ms")
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .frame(width: 50, alignment: .trailing)
                 }
             }
-        } detail: {
-            Text("Select an item")
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            Divider()
+            footer
         }
+        .frame(width: 360)
+        .background(.regularMaterial)
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+    private var header: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "rectangle.split.2x2.fill")
+                .foregroundStyle(.tint)
+            Text("Window Snapping")
+                .font(.headline)
+            Spacer()
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+    private var permissionBanner: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Accessibility permission required")
+                        .font(.subheadline).bold()
+                    Text("Control Center needs Accessibility access to move other apps' windows.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            HStack {
+                Button("Grant Permission\u{2026}") {
+                    accessibility.requestTrust()
+                    accessibility.openAccessibilitySettings()
+                }
+                .controlSize(.small)
+                Button("Re-check") {
+                    accessibility.refresh()
+                }
+                .controlSize(.small)
             }
         }
+        .padding(16)
+        .background(Color.orange.opacity(0.08))
+    }
+
+    private var bindingsList: some View {
+        VStack(spacing: 0) {
+            ForEach(WindowAction.allCases) { action in
+                HStack(spacing: 12) {
+                    Image(systemName: action.systemImage)
+                        .foregroundStyle(.tint)
+                        .frame(width: 18)
+                    Text(action.displayName)
+                        .font(.body)
+                    Spacer()
+                    KeyRecorder(combo: Binding(
+                        get: { store.bindings[action] },
+                        set: { newValue in
+                            if let newValue {
+                                store.setBinding(newValue, for: action)
+                            }
+                        }
+                    ))
+                    .frame(width: 140, height: 24)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 6)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var footer: some View {
+        HStack {
+            Button("Reset to defaults") {
+                store.resetToDefaults()
+            }
+            .controlSize(.small)
+            Spacer()
+            Button("Quit") {
+                NSApp.terminate(nil)
+            }
+            .controlSize(.small)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
     }
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+    SettingsView()
+        .environment(KeybindingStore())
+        .environment(AccessibilityService())
 }

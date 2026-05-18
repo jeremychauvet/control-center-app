@@ -1,32 +1,46 @@
-//
-//  control_center_appApp.swift
-//  control-center-app
-//
-//  Created by Captaincy on 18/05/2026.
-//
-
+import AppKit
 import SwiftUI
-import SwiftData
 
 @main
-struct control_center_appApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+struct ControlCenterApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        // App is menu-bar only (LSUIElement). Settings scene is a no-op stub —
+        // all UI lives in the status item popover managed by AppDelegate.
+        Settings { EmptyView() }
+    }
+}
+
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var store: KeybindingStore?
+    private var accessibility: AccessibilityService?
+    private var windowManager: WindowManager?
+    private var menuBar: MenuBarController?
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // Belt-and-braces in case LSUIElement isn't picked up: hide from Dock too.
+        NSApp.setActivationPolicy(.accessory)
+
+        let store = KeybindingStore()
+        let accessibility = AccessibilityService()
+        let windowManager = WindowManager(store: store, accessibility: accessibility)
+        let menuBar = MenuBarController(
+            store: store,
+            accessibility: accessibility,
+            windowManager: windowManager
+        )
+        menuBar.install()
+
+        self.store = store
+        self.accessibility = accessibility
+        self.windowManager = windowManager
+        self.menuBar = menuBar
+
+        // Soft-prompt for Accessibility on first launch. If denied the popover
+        // shows a "permission needed" banner with a one-click grant path.
+        if !accessibility.isTrusted {
+            accessibility.requestTrust()
         }
-        .modelContainer(sharedModelContainer)
     }
 }

@@ -6,13 +6,31 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EC802EFA2FBBA2DA00CE71EE /* ControlCenterAppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EC802EF92FBBA2DA00CE71EE /* ControlCenterAppIcon.icon */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		EC802EE92FBBA27400CE71EE /* control-center-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "control-center-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC802EE92FBBA27400CE71EE /* Control Center.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Control Center.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC802EF92FBBA2DA00CE71EE /* ControlCenterAppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ControlCenterAppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EC802F352FBBA7AB00CE71EE /* Exceptions for "control-center-app" folder in "control-center-app" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = EC802EE82FBBA27400CE71EE /* control-center-app */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EC802EEB2FBBA27400CE71EE /* control-center-app */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EC802F352FBBA7AB00CE71EE /* Exceptions for "control-center-app" folder in "control-center-app" target */,
+			);
 			path = "control-center-app";
 			sourceTree = "<group>";
 		};
@@ -34,13 +52,14 @@
 			children = (
 				EC802EEB2FBBA27400CE71EE /* control-center-app */,
 				EC802EEA2FBBA27400CE71EE /* Products */,
+				EC802EF92FBBA2DA00CE71EE /* ControlCenterAppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
 		EC802EEA2FBBA27400CE71EE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EC802EE92FBBA27400CE71EE /* control-center-app.app */,
+				EC802EE92FBBA27400CE71EE /* Control Center.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,7 +86,7 @@
 			packageProductDependencies = (
 			);
 			productName = "control-center-app";
-			productReference = EC802EE92FBBA27400CE71EE /* control-center-app.app */;
+			productReference = EC802EE92FBBA27400CE71EE /* Control Center.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -109,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC802EFA2FBBA2DA00CE71EE /* ControlCenterAppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,17 +268,20 @@
 		EC802EF72FBBA27500CE71EE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = ControlCenterAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2F76JSDJY9;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "control-center-app/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Control Center";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -266,7 +289,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jeremychauvet.control-center-app";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Control Center";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -280,17 +303,20 @@
 		EC802EF82FBBA27500CE71EE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = ControlCenterAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2F76JSDJY9;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "control-center-app/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Control Center";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -298,7 +324,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jeremychauvet.control-center-app";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Control Center";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
