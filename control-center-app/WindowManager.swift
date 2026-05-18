@@ -68,17 +68,68 @@ final class WindowManager {
               let screen = ScreenLayout.screen(forAXFrame: current) else {
             return
         }
+        let margin = Self.systemTileMargin
         let region = ScreenLayout.region(for: action)
+
+        // Cross-display chaining: pressing e.g. left-half on a window that's
+        // already snapped to the left half of its screen hops the window to the
+        // right half of the screen physically to the left (if one exists).
+        // Same idea for the other three halves. Maximize/Center don't chain.
+        var targetScreen = screen
+        var targetRegion = region
+        if let direction = Self.chainDirection(for: action) {
+            let here = ScreenLayout.targetFrame(
+                for: region, on: screen, margin: margin, currentAXFrame: current
+            )
+            if Self.frame(current, matches: here, within: Self.snapMatchTolerance),
+               let neighbor = ScreenLayout.neighborScreen(of: screen, direction: direction) {
+                targetScreen = neighbor
+                targetRegion = Self.opposite(region)
+            }
+        }
+
         let target = ScreenLayout.targetFrame(
-            for: region,
-            on: screen,
-            margin: Self.systemTileMargin,
+            for: targetRegion,
+            on: targetScreen,
+            margin: margin,
             currentAXFrame: current
         )
         if store.animationEnabled {
             animator.animate(window, to: target, duration: store.animationDuration)
         } else {
             windowController.setFrame(target, on: window)
+        }
+    }
+
+    /// Tolerance for deciding a window is "already" at a target frame. Loose
+    /// enough to absorb apps that clamp size to a character grid (Terminal,
+    /// editors), tight enough that a non-snapped window isn't mistaken for one.
+    private static let snapMatchTolerance: CGFloat = 10
+
+    private static func frame(_ a: CGRect, matches b: CGRect, within tol: CGFloat) -> Bool {
+        abs(a.minX - b.minX) < tol &&
+        abs(a.minY - b.minY) < tol &&
+        abs(a.width - b.width) < tol &&
+        abs(a.height - b.height) < tol
+    }
+
+    private static func chainDirection(for action: WindowAction) -> ScreenDirection? {
+        switch action {
+        case .leftHalf:   return .left
+        case .rightHalf:  return .right
+        case .topHalf:    return .up
+        case .bottomHalf: return .down
+        case .maximize, .center: return nil
+        }
+    }
+
+    private static func opposite(_ region: ScreenRegion) -> ScreenRegion {
+        switch region {
+        case .leftHalf:   return .rightHalf
+        case .rightHalf:  return .leftHalf
+        case .topHalf:    return .bottomHalf
+        case .bottomHalf: return .topHalf
+        case .maximize, .center: return region
         }
     }
 }

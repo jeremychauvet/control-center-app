@@ -5,6 +5,10 @@ enum ScreenRegion {
     case leftHalf, rightHalf, topHalf, bottomHalf, maximize, center
 }
 
+enum ScreenDirection {
+    case left, right, up, down
+}
+
 /// Pure functions for computing target window frames.
 ///
 /// Coordinate spaces:
@@ -116,6 +120,59 @@ enum ScreenLayout {
         case .maximize:   return .maximize
         case .center:     return .center
         }
+    }
+
+    /// Find the screen that sits adjacent to `screen` in the given physical
+    /// direction, based on the current Display Arrangement. Returns nil if no
+    /// screen lies on that side. Works with any layout (edge-to-edge, stacked,
+    /// staggered) because it operates on the actual NSScreen frames.
+    ///
+    /// Candidates must (a) be entirely past the corresponding edge of `screen`
+    /// and (b) share some perpendicular-axis overlap with it. Among valid
+    /// candidates, the one with the largest overlap wins; ties are broken by
+    /// shortest gap.
+    static func neighborScreen(of screen: NSScreen, direction: ScreenDirection) -> NSScreen? {
+        let current = screen.frame
+        // 1pt slack so screens that are nominally edge-to-edge but off by a hair
+        // (which Display Arrangement allows) still register as neighbors.
+        let slack: CGFloat = 1
+
+        var best: (screen: NSScreen, overlap: CGFloat, gap: CGFloat)?
+
+        for candidate in NSScreen.screens where candidate !== screen {
+            let f = candidate.frame
+            let overlap: CGFloat
+            let gap: CGFloat
+            switch direction {
+            case .left:
+                guard f.maxX <= current.minX + slack else { continue }
+                overlap = max(0, min(current.maxY, f.maxY) - max(current.minY, f.minY))
+                gap = current.minX - f.maxX
+            case .right:
+                guard f.minX >= current.maxX - slack else { continue }
+                overlap = max(0, min(current.maxY, f.maxY) - max(current.minY, f.minY))
+                gap = f.minX - current.maxX
+            case .up:
+                // NSScreen Y grows upward, so a higher screen has a greater minY.
+                guard f.minY >= current.maxY - slack else { continue }
+                overlap = max(0, min(current.maxX, f.maxX) - max(current.minX, f.minX))
+                gap = f.minY - current.maxY
+            case .down:
+                guard f.maxY <= current.minY + slack else { continue }
+                overlap = max(0, min(current.maxX, f.maxX) - max(current.minX, f.minX))
+                gap = current.minY - f.maxY
+            }
+            guard overlap > 0 else { continue }
+            if let b = best {
+                if overlap > b.overlap || (overlap == b.overlap && gap < b.gap) {
+                    best = (candidate, overlap, gap)
+                }
+            } else {
+                best = (candidate, overlap, gap)
+            }
+        }
+
+        return best?.screen
     }
 
     /// Height of the primary display — the screen whose origin is (0, 0). AX
