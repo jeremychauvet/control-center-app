@@ -11,6 +11,7 @@ protocol WindowControlling: AnyObject {
     func setFrame(_ frame: CGRect, on window: AXUIElement)
     func setPosition(_ position: CGPoint, on window: AXUIElement)
     func setSize(_ size: CGSize, on window: AXUIElement)
+    func minimize(_ window: AXUIElement)
 }
 
 @MainActor
@@ -71,6 +72,15 @@ final class WindowController: WindowControlling {
         let status = AXUIElementSetAttributeValue(window, kAXSizeAttribute as CFString, value)
         if status != .success {
             NSLog("WindowController: setSize failed status=\(status.rawValue)")
+        }
+    }
+
+    func minimize(_ window: AXUIElement) {
+        let status = AXUIElementSetAttributeValue(
+            window, kAXMinimizedAttribute as CFString, kCFBooleanTrue
+        )
+        if status != .success {
+            NSLog("WindowController: minimize failed status=\(status.rawValue)")
         }
     }
 

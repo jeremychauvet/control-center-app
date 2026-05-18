@@ -7,6 +7,7 @@ enum WindowAction: String, CaseIterable, Identifiable, Codable {
     case bottomHalf
     case maximize
     case center
+    case minimize
 
     var id: String { rawValue }
 
@@ -18,6 +19,7 @@ enum WindowAction: String, CaseIterable, Identifiable, Codable {
         case .bottomHalf: return "Bottom Half"
         case .maximize:   return "Maximize"
         case .center:     return "Center"
+        case .minimize:   return "Minimize to Dock"
         }
     }
 
@@ -29,6 +31,7 @@ enum WindowAction: String, CaseIterable, Identifiable, Codable {
         case .bottomHalf: return "rectangle.bottomhalf.filled"
         case .maximize:   return "rectangle.fill"
         case .center:     return "rectangle.center.inset.filled"
+        case .minimize:   return "dock.arrow.down.rectangle"
         }
     }
 }

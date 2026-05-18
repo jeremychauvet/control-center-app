@@ -111,6 +111,9 @@ enum ScreenLayout {
             ?? NSScreen.main
     }
 
+    /// Maps frame-based actions to their region. `.minimize` is not a frame
+    /// action and is handled separately upstream, so it intentionally falls
+    /// through to `.center` here — callers must not reach this with `.minimize`.
     static func region(for action: WindowAction) -> ScreenRegion {
         switch action {
         case .leftHalf:   return .leftHalf
@@ -119,6 +122,7 @@ enum ScreenLayout {
         case .bottomHalf: return .bottomHalf
         case .maximize:   return .maximize
         case .center:     return .center
+        case .minimize:   return .center
         }
     }
 

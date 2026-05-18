@@ -63,8 +63,14 @@ final class WindowManager {
             accessibility.requestTrust()
             return
         }
-        guard let window = windowController.focusedWindow(),
-              let current = windowController.frame(of: window),
+        guard let window = windowController.focusedWindow() else { return }
+
+        if action == .minimize {
+            windowController.minimize(window)
+            return
+        }
+
+        guard let current = windowController.frame(of: window),
               let screen = ScreenLayout.screen(forAXFrame: current) else {
             return
         }
@@ -119,7 +125,7 @@ final class WindowManager {
         case .rightHalf:  return .right
         case .topHalf:    return .up
         case .bottomHalf: return .down
-        case .maximize, .center: return nil
+        case .maximize, .center, .minimize: return nil
         }
     }
 

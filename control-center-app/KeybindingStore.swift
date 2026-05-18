@@ -27,7 +27,7 @@ final class KeybindingStore {
 
     private enum Keys {
         // Bump on default-binding changes so existing prefs don't shadow new defaults.
-        static let bindings = "bindings.v3"
+        static let bindings = "bindings.v4"
         static let animationEnabled = "animationEnabled"
         static let animationDuration = "animationDuration"
     }
@@ -53,9 +53,10 @@ final class KeybindingStore {
         self.animationDuration = storedDuration > 0 ? storedDuration : 0.18
     }
 
-    /// Defaults: Cmd+arrow for halves (per user request — overrides the conflict
-    /// with system text-navigation / browser back-forward / Finder), and
-    /// Control+Option for the non-arrow actions.
+    /// Defaults: Cmd+arrow for the most common actions (halves + minimize),
+    /// Control+Option for the rest. Cmd+Down minimizes to the Dock; the
+    /// bottom-half snap moves to Ctrl+Opt+Down to mirror top-half on
+    /// Ctrl+Opt+Up.
     static let defaultBindings: [WindowAction: KeyCombo] = {
         let cmd = UInt32(cmdKey)
         let ctrlOpt = UInt32(controlKey | optionKey)
@@ -63,8 +64,9 @@ final class KeybindingStore {
             .leftHalf:   KeyCombo(keyCode: UInt32(kVK_LeftArrow),  modifiers: cmd),
             .rightHalf:  KeyCombo(keyCode: UInt32(kVK_RightArrow), modifiers: cmd),
             .maximize:   KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: cmd),
-            .bottomHalf: KeyCombo(keyCode: UInt32(kVK_DownArrow),  modifiers: cmd),
+            .minimize:   KeyCombo(keyCode: UInt32(kVK_DownArrow),  modifiers: cmd),
             .topHalf:    KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: ctrlOpt),
+            .bottomHalf: KeyCombo(keyCode: UInt32(kVK_DownArrow),  modifiers: ctrlOpt),
             .center:     KeyCombo(keyCode: UInt32(kVK_ANSI_C),     modifiers: ctrlOpt),
         ]
     }()
