@@ -79,8 +79,12 @@ final class KeyRecorderNSView: NSView {
 
         let text = recording ? "Press shortcut\u{2026}" : (combo?.displayString ?? "—")
         let color: NSColor = recording ? .secondaryLabelColor : .labelColor
+        // Use the regular system font: the monospaced variant lacks glyphs for
+        // the modifier/arrow symbols we render, and font-fallback through
+        // CoreText crashes on macOS 26 with a nil attribute in the fallback
+        // dictionary.
         let attrs: [NSAttributedString.Key: Any] = [
-            .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .medium),
+            .font: NSFont.systemFont(ofSize: 12, weight: .medium),
             .foregroundColor: color,
         ]
         let attr = NSAttributedString(string: text, attributes: attrs)
