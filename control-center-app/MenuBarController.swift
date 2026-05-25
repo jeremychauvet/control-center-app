@@ -9,11 +9,18 @@ final class MenuBarController: NSObject {
 
     private let store: KeybindingStore
     private let accessibility: AccessibilityService
+    private let launchAtLogin: LaunchAtLoginService
     private let windowManager: WindowManager
 
-    init(store: KeybindingStore, accessibility: AccessibilityService, windowManager: WindowManager) {
+    init(
+        store: KeybindingStore,
+        accessibility: AccessibilityService,
+        launchAtLogin: LaunchAtLoginService,
+        windowManager: WindowManager
+    ) {
         self.store = store
         self.accessibility = accessibility
+        self.launchAtLogin = launchAtLogin
         self.windowManager = windowManager
         super.init()
     }
@@ -37,6 +44,7 @@ final class MenuBarController: NSObject {
             rootView: SettingsView()
                 .environment(store)
                 .environment(accessibility)
+                .environment(launchAtLogin)
         )
         self.popover = popover
     }

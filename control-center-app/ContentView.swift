@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(KeybindingStore.self) private var store
     @Environment(AccessibilityService.self) private var accessibility
+    @Environment(LaunchAtLoginService.self) private var launchAtLogin
 
     var body: some View {
         @Bindable var store = store
@@ -19,6 +20,11 @@ struct SettingsView: View {
             bindingsList
             Divider()
             VStack(alignment: .leading, spacing: 10) {
+                Toggle("Launch at login", isOn: Binding(
+                    get: { launchAtLogin.isEnabled },
+                    set: { launchAtLogin.setEnabled($0) }
+                ))
+                .toggleStyle(.switch)
                 Toggle("Animate window snapping", isOn: $store.animationEnabled)
                     .toggleStyle(.switch)
                 HStack {
@@ -40,6 +46,7 @@ struct SettingsView: View {
         }
         .frame(width: 360)
         .background(.regularMaterial)
+        .onAppear { launchAtLogin.refresh() }
     }
 
     private var header: some View {
@@ -132,4 +139,5 @@ struct SettingsView: View {
     SettingsView()
         .environment(KeybindingStore())
         .environment(AccessibilityService())
+        .environment(LaunchAtLoginService())
 }

@@ -15,6 +15,7 @@ struct ControlCenterApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var store: KeybindingStore?
     private var accessibility: AccessibilityService?
+    private var launchAtLogin: LaunchAtLoginService?
     private var windowManager: WindowManager?
     private var menuBar: MenuBarController?
 
@@ -24,16 +25,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let store = KeybindingStore()
         let accessibility = AccessibilityService()
+        let launchAtLogin = LaunchAtLoginService()
         let windowManager = WindowManager(store: store, accessibility: accessibility)
         let menuBar = MenuBarController(
             store: store,
             accessibility: accessibility,
+            launchAtLogin: launchAtLogin,
             windowManager: windowManager
         )
         menuBar.install()
 
         self.store = store
         self.accessibility = accessibility
+        self.launchAtLogin = launchAtLogin
         self.windowManager = windowManager
         self.menuBar = menuBar
 
