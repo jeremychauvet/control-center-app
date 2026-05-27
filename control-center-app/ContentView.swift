@@ -73,6 +73,11 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+                    Text("Already checked but not working? Remove the existing **Control Center** entry in System Settings → Privacy & Security → Accessibility (select it, click –), then click Grant Permission below to re-add it.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 2)
                 }
             }
             HStack {
