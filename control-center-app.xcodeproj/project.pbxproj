@@ -74,6 +74,7 @@
 				EC802EE52FBBA27400CE71EE /* Sources */,
 				EC802EE62FBBA27400CE71EE /* Frameworks */,
 				EC802EE72FBBA27400CE71EE /* Resources */,
+				EC6D20762FE92FAC00C91A11 /* Bump version */,
 			);
 			buildRules = (
 			);
@@ -133,6 +134,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EC6D20762FE92FAC00C91A11 /* Bump version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bump version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Scripts/bump-version.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EC802EE52FBBA27400CE71EE /* Sources */ = {
