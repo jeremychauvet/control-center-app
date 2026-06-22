@@ -1,148 +1,64 @@
-import AppKit
 import SwiftUI
 
-/// The popover UI for the menu bar item.
-struct SettingsView: View {
-    @Environment(KeybindingStore.self) private var store
-    @Environment(AccessibilityService.self) private var accessibility
-    @Environment(LaunchAtLoginService.self) private var launchAtLogin
+/// Root of the Control Center settings window: a sidebar listing feature groups,
+/// with a detail pane per selection. Hosted in an `NSWindow` by
+/// `SettingsWindowController`.
+struct ControlCenterView: View {
+    enum Pane: String, CaseIterable, Identifiable, Hashable {
+        case windowSnapping
+        case presence
+        case general
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .windowSnapping: return "Window Snapping"
+            case .presence: return "Presence"
+            case .general: return "General"
+            }
+        }
+
+        var systemImage: String {
+            switch self {
+            case .windowSnapping: return "rectangle.split.2x2.fill"
+            case .presence: return "cup.and.saucer.fill"
+            case .general: return "gearshape.fill"
+            }
+        }
+    }
+
+    @State private var selection: Pane? = .windowSnapping
 
     var body: some View {
-        @Bindable var store = store
-
-        VStack(alignment: .leading, spacing: 0) {
-            header
-            Divider()
-            if !accessibility.isTrusted {
-                permissionBanner
-                Divider()
-            }
-            bindingsList
-            Divider()
-            VStack(alignment: .leading, spacing: 10) {
-                Toggle("Launch at login", isOn: Binding(
-                    get: { launchAtLogin.isEnabled },
-                    set: { launchAtLogin.setEnabled($0) }
-                ))
-                .toggleStyle(.switch)
-                Toggle("Animate window snapping", isOn: $store.animationEnabled)
-                    .toggleStyle(.switch)
-                HStack {
-                    Text("Duration")
-                        .frame(width: 70, alignment: .leading)
-                        .foregroundStyle(store.animationEnabled ? .primary : .secondary)
-                    Slider(value: $store.animationDuration, in: 0.05...0.5)
-                        .disabled(!store.animationEnabled)
-                    Text("\(Int(store.animationDuration * 1000))ms")
-                        .font(.caption.monospaced())
-                        .foregroundStyle(.secondary)
-                        .frame(width: 50, alignment: .trailing)
+        NavigationSplitView {
+            List(selection: $selection) {
+                ForEach(Pane.allCases) { pane in
+                    Label(pane.title, systemImage: pane.systemImage)
+                        .tag(pane)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            Divider()
-            footer
+            .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 240)
+            .navigationTitle("Control Center")
+        } detail: {
+            detail
         }
-        .frame(width: 360)
-        .background(.regularMaterial)
-        .onAppear { launchAtLogin.refresh() }
     }
 
-    private var header: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "rectangle.split.2x2.fill")
-                .foregroundStyle(.tint)
-            Text("Window Snapping")
-                .font(.headline)
-            Spacer()
+    @ViewBuilder
+    private var detail: some View {
+        switch selection ?? .windowSnapping {
+        case .windowSnapping: WindowSnappingSettingsView()
+        case .presence: PresenceSettingsView()
+        case .general: GeneralSettingsView()
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-    }
-
-    private var permissionBanner: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top, spacing: 8) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(.orange)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Accessibility permission required")
-                        .font(.subheadline).bold()
-                    Text("Control Center needs Accessibility access to move other apps' windows.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text("Already checked but not working? Remove the existing **Control Center** entry in System Settings → Privacy & Security → Accessibility (select it, click –), then click Grant Permission below to re-add it.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.top, 2)
-                }
-            }
-            HStack {
-                Button("Grant Permission\u{2026}") {
-                    accessibility.requestTrust()
-                    accessibility.openAccessibilitySettings()
-                }
-                .controlSize(.small)
-                Button("Re-check") {
-                    accessibility.refresh()
-                }
-                .controlSize(.small)
-            }
-        }
-        .padding(16)
-        .background(Color.orange.opacity(0.08))
-    }
-
-    private var bindingsList: some View {
-        VStack(spacing: 0) {
-            ForEach(WindowAction.allCases) { action in
-                HStack(spacing: 12) {
-                    Image(systemName: action.systemImage)
-                        .foregroundStyle(.tint)
-                        .frame(width: 18)
-                    Text(action.displayName)
-                        .font(.body)
-                    Spacer()
-                    KeyRecorder(combo: Binding(
-                        get: { store.bindings[action] },
-                        set: { newValue in
-                            if let newValue {
-                                store.setBinding(newValue, for: action)
-                            }
-                        }
-                    ))
-                    .frame(width: 140, height: 24)
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 6)
-            }
-        }
-        .padding(.vertical, 4)
-    }
-
-    private var footer: some View {
-        HStack {
-            Button("Reset to defaults") {
-                store.resetToDefaults()
-            }
-            .controlSize(.small)
-            Spacer()
-            Button("Quit") {
-                NSApp.terminate(nil)
-            }
-            .controlSize(.small)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
     }
 }
 
 #Preview {
-    SettingsView()
+    ControlCenterView()
         .environment(KeybindingStore())
         .environment(AccessibilityService())
         .environment(LaunchAtLoginService())
+        .environment(PresenceService(accessibility: AccessibilityService()))
 }

@@ -10,6 +10,12 @@ import Observation
 final class AccessibilityService {
     private(set) var isTrusted: Bool
 
+    /// Fires when trust transitions (granted or revoked), so imperative observers
+    /// like `PresenceService` can reconcile. SwiftUI views observe `isTrusted`
+    /// directly and don't need this. Mirrors `KeybindingStore.onBindingsChanged`.
+    @ObservationIgnored
+    var onTrustChanged: ((Bool) -> Void)?
+
     @ObservationIgnored
     private var pollTimer: Timer?
 
@@ -25,7 +31,10 @@ final class AccessibilityService {
     /// Re-check trust without showing a prompt.
     func refresh() {
         let trusted = AXIsProcessTrusted()
-        if trusted != isTrusted { isTrusted = trusted }
+        if trusted != isTrusted {
+            isTrusted = trusted
+            onTrustChanged?(trusted)
+        }
     }
 
     /// Prompt the user (system dialog) to grant Accessibility permission. The
@@ -36,7 +45,10 @@ final class AccessibilityService {
         let key = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
         let options = [key: kCFBooleanTrue] as CFDictionary
         let trusted = AXIsProcessTrustedWithOptions(options)
-        isTrusted = trusted
+        if trusted != isTrusted {
+            isTrusted = trusted
+            onTrustChanged?(trusted)
+        }
         return trusted
     }
 

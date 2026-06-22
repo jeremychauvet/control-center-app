@@ -37,17 +37,22 @@ final class WindowAnimator {
         )
         activeAnimation = animation
 
+        // Capture a Sendable identity token rather than the non-Sendable
+        // `Animation` itself: the Timer's block is `@Sendable`, and everything we
+        // need lives on `self.activeAnimation` once we're back on the main actor.
+        let token = ObjectIdentifier(animation)
         let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] timer in
             MainActor.assumeIsolated {
-                guard let self, let current = self.activeAnimation, current === animation else {
+                guard let self, let current = self.activeAnimation,
+                      ObjectIdentifier(current) == token else {
                     timer.invalidate()
                     return
                 }
-                let elapsed = CACurrentMediaTime() - animation.startTime
-                let progress = min(1.0, elapsed / animation.duration)
+                let elapsed = CACurrentMediaTime() - current.startTime
+                let progress = min(1.0, elapsed / current.duration)
                 let eased = Self.easeOutCubic(progress)
-                let frame = Self.interpolate(from: animation.from, to: animation.to, t: eased)
-                self.controller.setFrame(frame, on: animation.window)
+                let frame = Self.interpolate(from: current.from, to: current.to, t: eased)
+                self.controller.setFrame(frame, on: current.window)
                 if progress >= 1.0 {
                     timer.invalidate()
                     self.activeAnimation = nil

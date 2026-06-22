@@ -33,8 +33,22 @@ enum ScreenLayout {
         currentAXFrame: CGRect? = nil
     ) -> CGRect {
         // visibleFrame excludes the menu bar and Dock — exactly what we want.
-        let axVisible = convertToAX(screen.visibleFrame)
+        regionFrame(
+            for: region,
+            inAXVisible: convertToAX(screen.visibleFrame),
+            margin: margin,
+            currentAXFrame: currentAXFrame
+        )
+    }
 
+    /// Pure region math on an already-AX-converted visible rect. Split out from
+    /// `targetFrame` so the geometry is unit-testable without an `NSScreen`.
+    static func regionFrame(
+        for region: ScreenRegion,
+        inAXVisible axVisible: CGRect,
+        margin: CGFloat = 0,
+        currentAXFrame: CGRect? = nil
+    ) -> CGRect {
         func inset(_ rect: CGRect) -> CGRect {
             guard margin > 0 else { return rect }
             return rect.insetBy(dx: margin, dy: margin)
@@ -80,8 +94,18 @@ enum ScreenLayout {
 
     /// Convert an NSRect (NSScreen bottom-left, primary-origin) to AX coordinates.
     static func convertToAX(_ rect: CGRect) -> CGRect {
-        let primaryHeight = primaryScreenHeight
-        return CGRect(
+        convertToAX(rect, primaryHeight: primaryScreenHeight)
+    }
+
+    /// Convert an AX rect back to NSScreen coordinates.
+    static func convertFromAX(_ rect: CGRect) -> CGRect {
+        convertFromAX(rect, primaryHeight: primaryScreenHeight)
+    }
+
+    /// The flip is its own involution, so one helper serves both directions. The
+    /// `primaryHeight` parameter makes it testable without reading `NSScreen`.
+    static func convertToAX(_ rect: CGRect, primaryHeight: CGFloat) -> CGRect {
+        CGRect(
             x: rect.origin.x,
             y: primaryHeight - rect.origin.y - rect.height,
             width: rect.width,
@@ -89,15 +113,8 @@ enum ScreenLayout {
         )
     }
 
-    /// Convert an AX rect back to NSScreen coordinates.
-    static func convertFromAX(_ rect: CGRect) -> CGRect {
-        let primaryHeight = primaryScreenHeight
-        return CGRect(
-            x: rect.origin.x,
-            y: primaryHeight - rect.origin.y - rect.height,
-            width: rect.width,
-            height: rect.height
-        )
+    static func convertFromAX(_ rect: CGRect, primaryHeight: CGFloat) -> CGRect {
+        convertToAX(rect, primaryHeight: primaryHeight)
     }
 
     /// Find the NSScreen that best contains the given AX-coordinate frame. Falls back
@@ -136,15 +153,36 @@ enum ScreenLayout {
     /// candidates, the one with the largest overlap wins; ties are broken by
     /// shortest gap.
     static func neighborScreen(of screen: NSScreen, direction: ScreenDirection) -> NSScreen? {
-        let current = screen.frame
-        // 1pt slack so screens that are nominally edge-to-edge but off by a hair
-        // (which Display Arrangement allows) still register as neighbors.
-        let slack: CGFloat = 1
+        let others = NSScreen.screens.filter { $0 !== screen }
+        guard let index = bestNeighborIndex(
+            of: screen.frame,
+            candidates: others.map(\.frame),
+            direction: direction
+        ) else {
+            return nil
+        }
+        return others[index]
+    }
 
-        var best: (screen: NSScreen, overlap: CGFloat, gap: CGFloat)?
+    /// Pure neighbor selection over plain frames (NSScreen coordinates, Y grows
+    /// upward). Returns the index in `candidates` of the screen adjacent to
+    /// `current` in `direction`, or nil if none qualifies. A candidate must be
+    /// entirely past the corresponding edge of `current` and share some
+    /// perpendicular-axis overlap; the largest overlap wins, ties broken by the
+    /// smaller gap. Extracted from `neighborScreen` so it can be tested with
+    /// synthetic arrangements.
+    ///
+    /// - Parameter slack: tolerance (default 1pt) so screens that are nominally
+    ///   edge-to-edge but off by a hair still register as neighbors.
+    static func bestNeighborIndex(
+        of current: CGRect,
+        candidates: [CGRect],
+        direction: ScreenDirection,
+        slack: CGFloat = 1
+    ) -> Int? {
+        var best: (index: Int, overlap: CGFloat, gap: CGFloat)?
 
-        for candidate in NSScreen.screens where candidate !== screen {
-            let f = candidate.frame
+        for (index, f) in candidates.enumerated() {
             let overlap: CGFloat
             let gap: CGFloat
             switch direction {
@@ -169,14 +207,14 @@ enum ScreenLayout {
             guard overlap > 0 else { continue }
             if let b = best {
                 if overlap > b.overlap || (overlap == b.overlap && gap < b.gap) {
-                    best = (candidate, overlap, gap)
+                    best = (index, overlap, gap)
                 }
             } else {
-                best = (candidate, overlap, gap)
+                best = (index, overlap, gap)
             }
         }
 
-        return best?.screen
+        return best?.index
     }
 
     /// Height of the primary display — the screen whose origin is (0, 0). AX

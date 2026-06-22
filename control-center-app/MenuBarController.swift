@@ -1,27 +1,14 @@
 import AppKit
-import SwiftUI
 
-/// Owns the NSStatusItem and the popover containing the settings UI.
+/// Owns the NSStatusItem. Clicking it shows a small menu whose primary action
+/// opens the Control Center window (via `SettingsWindowController`).
 @MainActor
 final class MenuBarController: NSObject {
     private var statusItem: NSStatusItem?
-    private var popover: NSPopover?
+    private let windowController: SettingsWindowController
 
-    private let store: KeybindingStore
-    private let accessibility: AccessibilityService
-    private let launchAtLogin: LaunchAtLoginService
-    private let windowManager: WindowManager
-
-    init(
-        store: KeybindingStore,
-        accessibility: AccessibilityService,
-        launchAtLogin: LaunchAtLoginService,
-        windowManager: WindowManager
-    ) {
-        self.store = store
-        self.accessibility = accessibility
-        self.launchAtLogin = launchAtLogin
-        self.windowManager = windowManager
+    init(windowController: SettingsWindowController) {
+        self.windowController = windowController
         super.init()
     }
 
@@ -32,30 +19,37 @@ final class MenuBarController: NSObject {
                 systemSymbolName: "rectangle.badge.sparkles",
                 accessibilityDescription: "Control Center"
             )
-            button.action = #selector(togglePopover(_:))
-            button.target = self
         }
-        self.statusItem = item
 
-        let popover = NSPopover()
-        popover.behavior = .transient
-        popover.contentSize = NSSize(width: 360, height: 520)
-        popover.contentViewController = NSHostingController(
-            rootView: SettingsView()
-                .environment(store)
-                .environment(accessibility)
-                .environment(launchAtLogin)
+        let menu = NSMenu()
+
+        let openItem = NSMenuItem(
+            title: "Open Control Center\u{2026}",
+            action: #selector(openControlCenter),
+            keyEquivalent: ""
         )
-        self.popover = popover
+        openItem.target = self
+        menu.addItem(openItem)
+
+        menu.addItem(.separator())
+
+        let quitItem = NSMenuItem(
+            title: "Quit Control Center",
+            action: #selector(quit),
+            keyEquivalent: "q"
+        )
+        quitItem.target = self
+        menu.addItem(quitItem)
+
+        item.menu = menu
+        self.statusItem = item
     }
 
-    @objc private func togglePopover(_ sender: Any?) {
-        guard let popover, let button = statusItem?.button else { return }
-        if popover.isShown {
-            popover.performClose(sender)
-        } else {
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-            popover.contentViewController?.view.window?.makeKey()
-        }
+    @objc private func openControlCenter() {
+        windowController.show()
+    }
+
+    @objc private func quit() {
+        NSApp.terminate(nil)
     }
 }
