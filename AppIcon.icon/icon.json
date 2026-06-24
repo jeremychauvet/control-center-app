@@ -1,0 +1,105 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "srgb:0.83742,0.83744,0.83743,1.00000",
+      "srgb:0.75407,0.75409,0.75408,1.00000"
+    ],
+    "orientation" : {
+      "start" : {
+        "x" : 0.5,
+        "y" : 0
+      },
+      "stop" : {
+        "x" : 0.5,
+        "y" : 0.7
+      }
+    }
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "Ellipse 1.svg",
+          "name" : "Ellipse 1",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              128.45437696366378,
+              -18.149152483537478
+            ]
+          }
+        },
+        {
+          "glass" : false,
+          "image-name" : "Rectangle 40.svg",
+          "name" : "Rectangle 40",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              128.45437696366378,
+              5.947597699785547
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "Ellipse 1.svg",
+          "name" : "Ellipse 1",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -209.49699819617683,
+              83.58857335622258
+            ]
+          }
+        },
+        {
+          "glass" : false,
+          "image-name" : "Rectangle 40.svg",
+          "name" : "Rectangle 40",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              -209.49699819617683,
+              0
+            ]
+          }
+        }
+      ],
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [
+          68.66675852327921,
+          5.947597699785547
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

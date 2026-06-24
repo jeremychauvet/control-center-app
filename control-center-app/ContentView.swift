@@ -7,7 +7,9 @@ struct ControlCenterView: View {
     enum Pane: String, CaseIterable, Identifiable, Hashable {
         case windowSnapping
         case presence
+        case keepAwake
         case general
+        case about
 
         var id: String { rawValue }
 
@@ -15,7 +17,9 @@ struct ControlCenterView: View {
             switch self {
             case .windowSnapping: return "Window Snapping"
             case .presence: return "Presence"
+            case .keepAwake: return "Keep Awake"
             case .general: return "General"
+            case .about: return "About"
             }
         }
 
@@ -23,7 +27,9 @@ struct ControlCenterView: View {
             switch self {
             case .windowSnapping: return "rectangle.split.2x2.fill"
             case .presence: return "cup.and.saucer.fill"
+            case .keepAwake: return "powersleep"
             case .general: return "gearshape.fill"
+            case .about: return "info.circle.fill"
             }
         }
     }
@@ -50,7 +56,9 @@ struct ControlCenterView: View {
         switch selection ?? .windowSnapping {
         case .windowSnapping: WindowSnappingSettingsView()
         case .presence: PresenceSettingsView()
+        case .keepAwake: KeepAwakeSettingsView()
         case .general: GeneralSettingsView()
+        case .about: AboutSettingsView()
         }
     }
 }
@@ -61,4 +69,5 @@ struct ControlCenterView: View {
         .environment(AccessibilityService())
         .environment(LaunchAtLoginService())
         .environment(PresenceService(accessibility: AccessibilityService()))
+        .environment(KeepAwakeService())
 }

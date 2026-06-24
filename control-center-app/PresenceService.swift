@@ -1,17 +1,14 @@
 import CoreGraphics
 import Foundation
-import IOKit.pwr_mgt
 import Observation
 
 /// Keeps you "Available" in apps like Microsoft Teams by detecting idle time and
-/// injecting an invisible F15 key event, and optionally prevents the Mac from
-/// sleeping. Ported from the standalone "I Am Here" app and adapted to Control
-/// Center's `@Observable` + UserDefaults conventions.
+/// injecting an invisible F15 key event. Ported from the standalone "I Am Here"
+/// app and adapted to Control Center's `@Observable` + UserDefaults conventions.
 ///
 /// Injecting events requires Accessibility trust, so the keep-alive loop only
 /// runs when the feature is enabled *and* the process is trusted; otherwise the
-/// mode reports `.needsPermission` rather than silently doing nothing. (Keeping
-/// the Mac awake needs no permission and is managed independently.)
+/// mode reports `.needsPermission` rather than silently doing nothing.
 @MainActor
 @Observable
 final class PresenceService {
@@ -59,18 +56,7 @@ final class PresenceService {
 
     private(set) var lastInjectionAt: Date?
 
-    var preventSleep: Bool {
-        didSet {
-            guard oldValue != preventSleep else { return }
-            defaults.set(preventSleep, forKey: Keys.preventSleep)
-            if preventSleep { acquireSleepAssertion() } else { releaseSleepAssertion() }
-        }
-    }
-
     @ObservationIgnored private let accessibility: AccessibilityService
-
-    @ObservationIgnored private var sleepAssertionID: IOPMAssertionID = 0
-    @ObservationIgnored private var hasSleepAssertion = false
 
     @ObservationIgnored private var timer: Timer?
     @ObservationIgnored private let tickInterval: TimeInterval = 5
@@ -95,7 +81,6 @@ final class PresenceService {
     private enum Keys {
         static let isEnabled = "presence.isEnabled"
         static let idleThreshold = "presence.idleThreshold"
-        static let preventSleep = "presence.preventSleep"
         static let showMenuBarIcon = "presence.showMenuBarIcon"
     }
 
@@ -104,7 +89,6 @@ final class PresenceService {
         let storedThreshold = defaults.double(forKey: Keys.idleThreshold)
         self.isEnabled = defaults.bool(forKey: Keys.isEnabled)
         self.idleThreshold = storedThreshold > 0 ? storedThreshold : 60
-        self.preventSleep = defaults.bool(forKey: Keys.preventSleep)
         // Default the menu-bar icon on.
         if defaults.object(forKey: Keys.showMenuBarIcon) == nil {
             self.showMenuBarIcon = true
@@ -120,7 +104,6 @@ final class PresenceService {
     /// observers don't fire for assignments in `init`). Call once after construction.
     func restore() {
         reconcile()
-        if preventSleep { acquireSleepAssertion() }
     }
 
     /// Sets the user's intent and, if enabling while untrusted, prompts for
@@ -231,35 +214,11 @@ final class PresenceService {
         }
     }
 
-    private func acquireSleepAssertion() {
-        guard !hasSleepAssertion else { return }
-        var id: IOPMAssertionID = 0
-        let result = IOPMAssertionCreateWithName(
-            kIOPMAssertionTypePreventUserIdleDisplaySleep as CFString,
-            IOPMAssertionLevel(kIOPMAssertionLevelOn),
-            "Control Center keeping Mac awake" as CFString,
-            &id
-        )
-        if result == kIOReturnSuccess {
-            sleepAssertionID = id
-            hasSleepAssertion = true
-        } else {
-            preventSleep = false
-        }
-    }
-
-    private func releaseSleepAssertion() {
-        guard hasSleepAssertion else { return }
-        IOPMAssertionRelease(sleepAssertionID)
-        sleepAssertionID = 0
-        hasSleepAssertion = false
-    }
-
     private func postKeepAliveEvent() {
         guard let src = injectionSource else { return }
         let down = CGEvent(keyboardEventSource: src, virtualKey: virtualKey, keyDown: true)
         let up = CGEvent(keyboardEventSource: src, virtualKey: virtualKey, keyDown: false)
-        down?.post(tap: .cghidEventTap)
-        up?.post(tap: .cghidEventTap)
+        down?.post(tap: .cgSessionEventTap)
+        up?.post(tap: .cgSessionEventTap)
     }
 }

@@ -20,6 +20,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var windowManager: WindowManager?
     private var presence: PresenceService?
     private var presenceStatus: PresenceStatusItemController?
+    private var keepAwake: KeepAwakeService?
     private var settingsWindow: SettingsWindowController?
     private var menuBar: MenuBarController?
 
@@ -37,14 +38,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // before restore() so a persisted-on feature shows its item immediately.
         let presenceStatus = PresenceStatusItemController(presence: presence)
         presenceStatus.install()
-        // Re-apply persisted presence state (start keep-alive / sleep assertion).
+        // Re-apply persisted presence state (start keep-alive loop).
         presence.restore()
+
+        let keepAwake = KeepAwakeService()
+        keepAwake.restore()
 
         let settingsWindow = SettingsWindowController(
             store: store,
             accessibility: accessibility,
             launchAtLogin: launchAtLogin,
-            presence: presence
+            presence: presence,
+            keepAwake: keepAwake
         )
         let menuBar = MenuBarController(windowController: settingsWindow)
         menuBar.install()
@@ -55,6 +60,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.windowManager = windowManager
         self.presence = presence
         self.presenceStatus = presenceStatus
+        self.keepAwake = keepAwake
         self.settingsWindow = settingsWindow
         self.menuBar = menuBar
 

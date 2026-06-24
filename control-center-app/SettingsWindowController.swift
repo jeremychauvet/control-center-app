@@ -11,17 +11,20 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
     private let accessibility: AccessibilityService
     private let launchAtLogin: LaunchAtLoginService
     private let presence: PresenceService
+    private let keepAwake: KeepAwakeService
 
     init(
         store: KeybindingStore,
         accessibility: AccessibilityService,
         launchAtLogin: LaunchAtLoginService,
-        presence: PresenceService
+        presence: PresenceService,
+        keepAwake: KeepAwakeService
     ) {
         self.store = store
         self.accessibility = accessibility
         self.launchAtLogin = launchAtLogin
         self.presence = presence
+        self.keepAwake = keepAwake
         super.init()
     }
 
@@ -43,6 +46,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
             .environment(accessibility)
             .environment(launchAtLogin)
             .environment(presence)
+            .environment(keepAwake)
 
         let hosting = NSHostingController(rootView: root)
         let window = NSWindow(contentViewController: hosting)

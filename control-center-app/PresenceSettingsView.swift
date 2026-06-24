@@ -75,12 +75,11 @@ struct PresenceSettingsView: View {
             }
 
             Section {
-                Toggle("Keep the Mac awake while away", isOn: $presence.preventSleep)
                 Toggle("Show in menu bar", isOn: $presence.showMenuBarIcon)
             } header: {
                 Text("Options")
             } footer: {
-                Text("Keeping the Mac awake prevents the display from sleeping so you stay visible. The menu-bar icon lets you toggle availability without opening this window.")
+                Text("The menu-bar icon lets you toggle availability without opening this window.")
             }
         }
         .formStyle(.grouped)
