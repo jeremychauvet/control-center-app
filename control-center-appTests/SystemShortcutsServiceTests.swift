@@ -26,4 +26,22 @@ final class SystemShortcutsServiceTests: XCTestCase {
     func testActivityMonitorBundleID() {
         XCTAssertEqual(SystemShortcutsService.activityMonitorBundleID, "com.apple.ActivityMonitor")
     }
+
+    func testLockScreenComboIsCommandK() {
+        let combo = SystemShortcutsService.lockScreenCombo
+        XCTAssertEqual(combo.keyCode, UInt32(kVK_ANSI_K))
+        XCTAssertEqual(combo.modifiers & UInt32(cmdKey), UInt32(cmdKey))
+        // Command only — no other modifiers.
+        XCTAssertEqual(combo.modifiers & UInt32(controlKey), 0)
+        XCTAssertEqual(combo.modifiers & UInt32(optionKey), 0)
+        XCTAssertEqual(combo.modifiers & UInt32(shiftKey), 0)
+    }
+
+    func testLockScreenComboDisplayString() {
+        // ⌘ then K.
+        XCTAssertEqual(
+            SystemShortcutsService.lockScreenCombo.displayString,
+            "\u{2318}K"
+        )
+    }
 }
