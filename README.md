@@ -22,6 +22,7 @@ and exposes a clean Swift API so it can be tested in isolation.
 | `ScreenLayout` | Pure functions that compute target frames for each region on a given `NSScreen.visibleFrame`, handling the NSScreen↔AX coordinate flip and multi-monitor space. |
 | `WindowAnimator` | Interpolates the window's frame to the target over ~180ms with an ease-out curve, driven by a 60 fps timer. The AX API has no animation primitive so this is best-effort — some apps (Electron/Java/Qt) will step rather than glide. |
 | `WindowManager` | Orchestrator that wires the layers together and handles re-registration when shortcuts change. |
+| `SystemShortcutsService` | Registers global shortcuts for system utilities (e.g. `⌃⇧⎋` → Activity Monitor). Shares the app-wide `HotkeyManager`. |
 | `KeybindingStore` | `@Observable` persistence of bindings + animation settings in `UserDefaults`. |
 | `MenuBarController` | `NSStatusItem` + `NSPopover` hosting the SwiftUI settings UI. |
 
@@ -39,6 +40,16 @@ are remappable from the popover.
 | Bottom half | `⌘↓` |
 | Top half | `⌃⌥↑` |
 | Center | `⌃⌥C` |
+
+### System utilities
+
+| Action | Default |
+|---|---|
+| Launch Activity Monitor | `⌃⇧⎋` |
+
+`⌃⇧⎋` mirrors Windows' `Ctrl+Shift+Esc` (Task Manager); Activity Monitor is the
+macOS equivalent. Carbon hotkeys can't distinguish left from right Shift, so this
+fires for either Shift key. This shortcut is fixed, not remappable.
 
 ## Accessibility permission
 

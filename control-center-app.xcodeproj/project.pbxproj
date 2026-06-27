@@ -11,6 +11,9 @@
 		1C2E6821982D4A0E9C45AFFA /* ScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64AD9625224A4ED3BA707C42 /* ScreenLayout.swift */; };
 		5B02E20E4CB34A52B967852F /* WindowActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779D067F7EC453DA31638E5 /* WindowActionTests.swift */; };
 		8C5408C9D5FF48AD97284509 /* KeyComboTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B1F301E58C4AB192C3EC8A /* KeyComboTests.swift */; };
+		A1B2C3D4E5F60718293A4B02 /* SystemShortcutsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B01 /* SystemShortcutsService.swift */; };
+		A1B2C3D4E5F60718293A4B04 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B03 /* HotkeyManager.swift */; };
+		A1B2C3D4E5F60718293A4B06 /* SystemShortcutsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B05 /* SystemShortcutsServiceTests.swift */; };
 		A16A848749CE4747BCDC2AC2 /* WindowAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE041B4BC25D47C0ACABB349 /* WindowAction.swift */; };
 		EC6FA98C2FEC01880068AA71 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EC6FA98B2FEC01880068AA71 /* AppIcon.icon */; };
 		EC802EFA2FBBA2DA00CE71EE /* ControlCenterAppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EC802EF92FBBA2DA00CE71EE /* ControlCenterAppIcon.icon */; };
@@ -21,6 +24,9 @@
 		4779D067F7EC453DA31638E5 /* WindowActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowActionTests.swift; sourceTree = "<group>"; };
 		64AD9625224A4ED3BA707C42 /* ScreenLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScreenLayout.swift; path = "control-center-app/ScreenLayout.swift"; sourceTree = SOURCE_ROOT; };
 		84B389CD301C4806813204C4 /* control-center-appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "control-center-appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F60718293A4B01 /* SystemShortcutsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SystemShortcutsService.swift; path = "control-center-app/SystemShortcutsService.swift"; sourceTree = SOURCE_ROOT; };
+		A1B2C3D4E5F60718293A4B03 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HotkeyManager.swift; path = "control-center-app/HotkeyManager.swift"; sourceTree = SOURCE_ROOT; };
+		A1B2C3D4E5F60718293A4B05 /* SystemShortcutsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemShortcutsServiceTests.swift; sourceTree = "<group>"; };
 		AE041B4BC25D47C0ACABB349 /* WindowAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WindowAction.swift; path = "control-center-app/WindowAction.swift"; sourceTree = SOURCE_ROOT; };
 		C95F15600EFE42D7A0E74836 /* KeyCombo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeyCombo.swift; path = "control-center-app/KeyCombo.swift"; sourceTree = SOURCE_ROOT; };
 		D2B1F301E58C4AB192C3EC8A /* KeyComboTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyComboTests.swift; sourceTree = "<group>"; };
@@ -75,6 +81,7 @@
 				EC74FD2971C041848858A9B9 /* ScreenLayoutTests.swift */,
 				D2B1F301E58C4AB192C3EC8A /* KeyComboTests.swift */,
 				4779D067F7EC453DA31638E5 /* WindowActionTests.swift */,
+				A1B2C3D4E5F60718293A4B05 /* SystemShortcutsServiceTests.swift */,
 			);
 			path = "control-center-appTests";
 			sourceTree = "<group>";
@@ -234,9 +241,12 @@
 				1C2E6821982D4A0E9C45AFFA /* ScreenLayout.swift in Sources */,
 				177B3BC6F78E4E46A4F32037 /* KeyCombo.swift in Sources */,
 				A16A848749CE4747BCDC2AC2 /* WindowAction.swift in Sources */,
+				A1B2C3D4E5F60718293A4B04 /* HotkeyManager.swift in Sources */,
+				A1B2C3D4E5F60718293A4B02 /* SystemShortcutsService.swift in Sources */,
 				F6DCF237C2704DF5A2991D63 /* ScreenLayoutTests.swift in Sources */,
 				8C5408C9D5FF48AD97284509 /* KeyComboTests.swift in Sources */,
 				5B02E20E4CB34A52B967852F /* WindowActionTests.swift in Sources */,
+				A1B2C3D4E5F60718293A4B06 /* SystemShortcutsServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,7 +269,7 @@
 				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jeremychauvet.control-center-appTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -279,7 +289,7 @@
 				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jeremychauvet.control-center-appTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -417,7 +427,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = 2F76JSDJY9;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -433,7 +443,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jeremychauvet.control-center-app.beta";
 				PRODUCT_NAME = "Control Center (beta)";
 				REGISTER_APP_GROUPS = YES;
@@ -453,7 +463,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = 2F76JSDJY9;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -469,7 +479,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jeremychauvet.control-center-app";
 				PRODUCT_NAME = "Control Center";
 				REGISTER_APP_GROUPS = YES;

@@ -14,10 +14,10 @@ final class WindowManager {
     private let store: KeybindingStore
     private var hotkeyIDs: [WindowAction: UInt32] = [:]
 
-    init(store: KeybindingStore, accessibility: AccessibilityService) {
+    init(store: KeybindingStore, accessibility: AccessibilityService, hotkeyManager: HotkeyManager) {
         self.store = store
         self.accessibility = accessibility
-        self.hotkeyManager = HotkeyManager()
+        self.hotkeyManager = hotkeyManager
         let controller = WindowController()
         self.windowController = controller
         self.animator = WindowAnimator(controller: controller)

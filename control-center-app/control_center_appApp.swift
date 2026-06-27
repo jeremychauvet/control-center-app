@@ -18,6 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var accessibility: AccessibilityService?
     private var launchAtLogin: LaunchAtLoginService?
     private var windowManager: WindowManager?
+    private var systemShortcuts: SystemShortcutsService?
     private var presence: PresenceService?
     private var presenceStatus: PresenceStatusItemController?
     private var keepAwake: KeepAwakeService?
@@ -32,7 +33,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let store = KeybindingStore()
         let accessibility = AccessibilityService()
         let launchAtLogin = LaunchAtLoginService()
-        let windowManager = WindowManager(store: store, accessibility: accessibility)
+        // A single HotkeyManager is shared across all global-shortcut owners.
+        // Each HotkeyManager installs a Carbon event handler that consumes the
+        // event, so multiple managers would swallow each other's hotkeys.
+        let hotkeyManager = HotkeyManager()
+        let windowManager = WindowManager(
+            store: store,
+            accessibility: accessibility,
+            hotkeyManager: hotkeyManager
+        )
+        let systemShortcuts = SystemShortcutsService(hotkeyManager: hotkeyManager)
+        systemShortcuts.register()
         let presence = PresenceService(accessibility: accessibility)
         // The presence status-bar item observes presence state; install it
         // before restore() so a persisted-on feature shows its item immediately.
@@ -58,6 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.accessibility = accessibility
         self.launchAtLogin = launchAtLogin
         self.windowManager = windowManager
+        self.systemShortcuts = systemShortcuts
         self.presence = presence
         self.presenceStatus = presenceStatus
         self.keepAwake = keepAwake
