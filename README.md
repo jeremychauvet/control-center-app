@@ -34,8 +34,8 @@ are remappable from the popover.
 
 | Action | Default |
 |---|---|
-| Left half | `⌘←` |
-| Right half | `⌘→` |
+| Left half | `⌘⇧←` |
+| Right half | `⌘⇧→` |
 | Maximize | `⌘↑` |
 | Bottom half | `⌘↓` |
 | Top half | `⌃⌥↑` |

@@ -10,7 +10,7 @@ final class WindowActionTests: XCTestCase {
     }
 
     func testRawValuesAreStable() {
-        // These rawValues key the persisted shortcut map (`bindings.v4`). Renaming
+        // These rawValues key the persisted shortcut map (`bindings.v5`). Renaming
         // a case silently discards users' saved shortcuts — this is the guardrail.
         let expected: Set<String> = [
             "leftHalf", "rightHalf", "topHalf", "bottomHalf", "maximize", "center", "minimize",
