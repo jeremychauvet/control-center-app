@@ -27,7 +27,7 @@ final class KeybindingStore {
 
     private enum Keys {
         // Bump on default-binding changes so existing prefs don't shadow new defaults.
-        static let bindings = "bindings.v5"
+        static let bindings = "bindings.v6"
         static let animationEnabled = "animationEnabled"
         static let animationDuration = "animationDuration"
     }
@@ -53,18 +53,17 @@ final class KeybindingStore {
         self.animationDuration = storedDuration > 0 ? storedDuration : 0.18
     }
 
-    /// Defaults: Cmd+Up/Down for maximize/minimize, Cmd+Shift+Left/Right for the
-    /// horizontal halves (plain Cmd+Left/Right are reserved by macOS for moving
-    /// the text cursor to the start/end of a line), Control+Option for the rest.
+    /// Defaults: Cmd+Up/Down for maximize/minimize, Cmd+Left/Right for the
+    /// horizontal halves. Cmd+Shift+Left/Right are intentionally left unbound so
+    /// macOS can use them to move the text cursor. Control+Option for the rest.
     /// Cmd+Down minimizes to the Dock; the bottom-half snap moves to Ctrl+Opt+Down
     /// to mirror top-half on Ctrl+Opt+Up.
     static let defaultBindings: [WindowAction: KeyCombo] = {
         let cmd = UInt32(cmdKey)
-        let cmdShift = UInt32(cmdKey | shiftKey)
         let ctrlOpt = UInt32(controlKey | optionKey)
         return [
-            .leftHalf:   KeyCombo(keyCode: UInt32(kVK_LeftArrow),  modifiers: cmdShift),
-            .rightHalf:  KeyCombo(keyCode: UInt32(kVK_RightArrow), modifiers: cmdShift),
+            .leftHalf:   KeyCombo(keyCode: UInt32(kVK_LeftArrow),  modifiers: cmd),
+            .rightHalf:  KeyCombo(keyCode: UInt32(kVK_RightArrow), modifiers: cmd),
             .maximize:   KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: cmd),
             .minimize:   KeyCombo(keyCode: UInt32(kVK_DownArrow),  modifiers: cmd),
             .topHalf:    KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: ctrlOpt),
