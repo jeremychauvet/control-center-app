@@ -16,7 +16,9 @@ final class LaunchAtLoginService {
 
     @ObservationIgnored
     private static let logger = Logger(
-        subsystem: "com.jeremychauvet.control-center-app",
+        // Resolve from the running bundle so the beta target's logs aren't
+        // mislabeled under the release bundle identifier.
+        subsystem: Bundle.main.bundleIdentifier ?? "com.jeremychauvet.control-center-app",
         category: "LaunchAtLogin"
     )
 

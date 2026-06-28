@@ -11,12 +11,11 @@
 		1C2E6821982D4A0E9C45AFFA /* ScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64AD9625224A4ED3BA707C42 /* ScreenLayout.swift */; };
 		5B02E20E4CB34A52B967852F /* WindowActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779D067F7EC453DA31638E5 /* WindowActionTests.swift */; };
 		8C5408C9D5FF48AD97284509 /* KeyComboTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2B1F301E58C4AB192C3EC8A /* KeyComboTests.swift */; };
+		A16A848749CE4747BCDC2AC2 /* WindowAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE041B4BC25D47C0ACABB349 /* WindowAction.swift */; };
 		A1B2C3D4E5F60718293A4B02 /* SystemShortcutsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B01 /* SystemShortcutsService.swift */; };
 		A1B2C3D4E5F60718293A4B04 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B03 /* HotkeyManager.swift */; };
 		A1B2C3D4E5F60718293A4B06 /* SystemShortcutsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B05 /* SystemShortcutsServiceTests.swift */; };
-		A16A848749CE4747BCDC2AC2 /* WindowAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE041B4BC25D47C0ACABB349 /* WindowAction.swift */; };
 		EC6FA98C2FEC01880068AA71 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EC6FA98B2FEC01880068AA71 /* AppIcon.icon */; };
-		EC802EFA2FBBA2DA00CE71EE /* ControlCenterAppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EC802EF92FBBA2DA00CE71EE /* ControlCenterAppIcon.icon */; };
 		F6DCF237C2704DF5A2991D63 /* ScreenLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74FD2971C041848858A9B9 /* ScreenLayoutTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,25 +32,11 @@
 		EC6FA98B2FEC01880068AA71 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		EC74FD2971C041848858A9B9 /* ScreenLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenLayoutTests.swift; sourceTree = "<group>"; };
 		EC802EE92FBBA27400CE71EE /* Control Center (beta).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Control Center (beta).app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC802EF92FBBA2DA00CE71EE /* ControlCenterAppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ControlCenterAppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EC802F352FBBA7AB00CE71EE /* Exceptions for "control-center-app" folder in "control-center-app" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = EC802EE82FBBA27400CE71EE /* control-center-app */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EC802EEB2FBBA27400CE71EE /* control-center-app */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				EC802F352FBBA7AB00CE71EE /* Exceptions for "control-center-app" folder in "control-center-app" target */,
-			);
 			path = "control-center-app";
 			sourceTree = "<group>";
 		};
@@ -92,6 +77,8 @@
 				64AD9625224A4ED3BA707C42 /* ScreenLayout.swift */,
 				C95F15600EFE42D7A0E74836 /* KeyCombo.swift */,
 				AE041B4BC25D47C0ACABB349 /* WindowAction.swift */,
+				A1B2C3D4E5F60718293A4B03 /* HotkeyManager.swift */,
+				A1B2C3D4E5F60718293A4B01 /* SystemShortcutsService.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -102,7 +89,6 @@
 				EC802EEB2FBBA27400CE71EE /* control-center-app */,
 				C5B1E30F77E044FCBE89C8FF /* control-center-appTests */,
 				EC802EEA2FBBA27400CE71EE /* Products */,
-				EC802EF92FBBA2DA00CE71EE /* ControlCenterAppIcon.icon */,
 				EC6FA95E2FEC01220068AA71 /* Recovered References */,
 				EC6FA98B2FEC01880068AA71 /* AppIcon.icon */,
 			);
@@ -204,7 +190,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC802EFA2FBBA2DA00CE71EE /* ControlCenterAppIcon.icon in Resources */,
 				EC6FA98C2FEC01880068AA71 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,14 +412,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_TEAM = 2F76JSDJY9;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "control-center-app/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Control Center (beta)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -463,14 +447,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_TEAM = 2F76JSDJY9;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "control-center-app/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Control Center";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
