@@ -27,7 +27,7 @@ final class KeybindingStore {
 
     private enum Keys {
         // Bump on default-binding changes so existing prefs don't shadow new defaults.
-        static let bindings = "bindings.v7"
+        static let bindings = "bindings.v8"
         static let animationEnabled = "animationEnabled"
         static let animationDuration = "animationDuration"
     }
@@ -53,16 +53,15 @@ final class KeybindingStore {
         self.animationDuration = storedDuration > 0 ? storedDuration : 0.18
     }
 
-    /// Defaults: Cmd+Up/Down for maximize/minimize. All four halves live on
-    /// Ctrl+Opt+arrows so the Cmd+arrow keys stay native for text-cursor
-    /// movement (Cmd+Left/Right to line ends, Cmd+Shift+arrow to select).
-    /// Cmd+Down minimizes to the Dock.
+    /// Defaults: Cmd+arrows snap windows — Cmd+Left/Right for the horizontal
+    /// halves, Cmd+Up/Down for maximize/minimize (Cmd+Down minimizes to the
+    /// Dock). Top/bottom halves and center live on Ctrl+Opt.
     static let defaultBindings: [WindowAction: KeyCombo] = {
         let cmd = UInt32(cmdKey)
         let ctrlOpt = UInt32(controlKey | optionKey)
         return [
-            .leftHalf:   KeyCombo(keyCode: UInt32(kVK_LeftArrow),  modifiers: ctrlOpt),
-            .rightHalf:  KeyCombo(keyCode: UInt32(kVK_RightArrow), modifiers: ctrlOpt),
+            .leftHalf:   KeyCombo(keyCode: UInt32(kVK_LeftArrow),  modifiers: cmd),
+            .rightHalf:  KeyCombo(keyCode: UInt32(kVK_RightArrow), modifiers: cmd),
             .maximize:   KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: cmd),
             .minimize:   KeyCombo(keyCode: UInt32(kVK_DownArrow),  modifiers: cmd),
             .topHalf:    KeyCombo(keyCode: UInt32(kVK_UpArrow),    modifiers: ctrlOpt),
