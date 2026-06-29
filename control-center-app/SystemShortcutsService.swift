@@ -7,7 +7,7 @@ import Foundation
 ///   - Control+Shift+Escape launches Activity Monitor — borrowing the Windows
 ///     "Ctrl+Shift+Esc opens Task Manager" muscle memory (Activity Monitor is the
 ///     macOS equivalent).
-///   - Command+K locks the screen (switches to the login window).
+///   - Command+L locks the screen (switches to the login window).
 @MainActor
 final class SystemShortcutsService {
     private let hotkeyManager: HotkeyManager
@@ -22,11 +22,11 @@ final class SystemShortcutsService {
         modifiers: UInt32(controlKey | shiftKey)
     )
 
-    /// Command+K. Registered as a system-wide hotkey, so it consumes ⌘K globally
+    /// Command+L. Registered as a system-wide hotkey, so it consumes ⌘L globally
     /// (it will not reach the frontmost app). Chosen deliberately per the feature
     /// request.
     static let lockScreenCombo = KeyCombo(
-        keyCode: UInt32(kVK_ANSI_K),
+        keyCode: UInt32(kVK_ANSI_L),
         modifiers: UInt32(cmdKey)
     )
 
